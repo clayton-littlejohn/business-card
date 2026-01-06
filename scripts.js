@@ -22,10 +22,6 @@ function createConstellationBackground() {
     canvas.id = 'constellation-canvas';
     document.body.prepend(canvas);
     
-    // Force body to have proper height for absolute positioning
-    document.body.style.minHeight = '100vh';
-    document.body.style.position = 'relative';
-    
     const ctx = canvas.getContext('2d');
     let dots = [];
     let animationId;
@@ -168,42 +164,15 @@ function createConstellationBackground() {
     initDots();
     animate();
     
-    // Force resize after page is fully loaded to catch late-rendering elements
-    setTimeout(() => {
-        resizeCanvas();
-        initDots();
-    }, 100);
-    
-    setTimeout(() => {
-        resizeCanvas();
-        initDots();
-    }, 500);
-    
-    setTimeout(() => {
-        resizeCanvas();
-        initDots();
-    }, 1000);
-    
     // Listen for resize
     window.addEventListener('resize', throttle(handleResize, 250));
-    
-    // Also listen for load event
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            resizeCanvas();
-            initDots();
-        }, 100);
-    });
     
     // Update canvas height on scroll (for dynamic content)
     let lastHeight = Math.max(
         document.documentElement.scrollHeight,
         document.body.scrollHeight
     );
-    
-    // Check more frequently initially (first 5 seconds)
-    let checkCount = 0;
-    const heightChecker = setInterval(() => {
+    setInterval(() => {
         const currentHeight = Math.max(
             document.documentElement.scrollHeight,
             document.body.scrollHeight
@@ -212,23 +181,7 @@ function createConstellationBackground() {
             lastHeight = currentHeight;
             resizeCanvas();
         }
-        
-        checkCount++;
-        // After 5 seconds (10 checks at 500ms), slow down to every 2 seconds
-        if (checkCount >= 10) {
-            clearInterval(heightChecker);
-            setInterval(() => {
-                const currentHeight = Math.max(
-                    document.documentElement.scrollHeight,
-                    document.body.scrollHeight
-                );
-                if (currentHeight !== lastHeight) {
-                    lastHeight = currentHeight;
-                    resizeCanvas();
-                }
-            }, 2000);
-        }
-    }, 500);
+    }, 1000);
 }
 
 // ============================================
@@ -437,21 +390,3 @@ function initializeApp() {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeApp);
-
-// Also resize canvas after full page load (including images)
-window.addEventListener('load', () => {
-    // Wait a bit to ensure everything is rendered
-    setTimeout(() => {
-        const canvas = document.getElementById('constellation-canvas');
-        if (canvas) {
-            const event = new Event('resize');
-            window.dispatchEvent(event);
-        }
-    }, 100);
-});
-
-// Force a final resize after a longer delay for mobile
-setTimeout(() => {
-    const event = new Event('resize');
-    window.dispatchEvent(event);
-}, 500);
