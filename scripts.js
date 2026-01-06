@@ -166,7 +166,7 @@ function createConstellationBackground() {
 
         // Use smaller divisor on mobile to get more dots
 
-        const divisor = width <= 768 ? 8000 : 15000;
+        const divisor = width <= 768 ? 5000 : 15000;
 
         const dotCount = Math.floor((width * height) / divisor);
 
