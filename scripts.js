@@ -30,14 +30,7 @@ function createConstellationBackground() {
     function resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
         const width = window.innerWidth;
-        // Use Math.max to ensure we cover the entire page including footer
-        const height = Math.max(
-            document.documentElement.scrollHeight,
-            document.body.scrollHeight,
-            document.documentElement.offsetHeight,
-            document.body.offsetHeight,
-            document.documentElement.clientHeight
-        );
+        const height = document.documentElement.scrollHeight;
         
         // Set actual canvas size (scaled for DPR)
         canvas.width = width * dpr;
@@ -55,13 +48,8 @@ function createConstellationBackground() {
     class Dot {
         constructor() {
             // Use CSS pixel dimensions for positioning
-            const maxHeight = Math.max(
-                document.documentElement.scrollHeight,
-                document.body.scrollHeight,
-                document.documentElement.offsetHeight
-            );
             this.x = Math.random() * window.innerWidth;
-            this.y = Math.random() * maxHeight;
+            this.y = Math.random() * document.documentElement.scrollHeight;
             this.vx = (Math.random() - 0.5) * 0.3;
             this.vy = (Math.random() - 0.5) * 0.3;
             this.radius = Math.random() * 1.5 + 0.5;
@@ -72,17 +60,12 @@ function createConstellationBackground() {
             this.y += this.vy;
             
             // Bounce off edges (use CSS pixel dimensions)
-            const maxHeight = Math.max(
-                document.documentElement.scrollHeight,
-                document.body.scrollHeight,
-                document.documentElement.offsetHeight
-            );
             if (this.x < 0 || this.x > window.innerWidth) this.vx *= -1;
-            if (this.y < 0 || this.y > maxHeight) this.vy *= -1;
+            if (this.y < 0 || this.y > document.documentElement.scrollHeight) this.vy *= -1;
             
             // Keep within bounds
             this.x = Math.max(0, Math.min(window.innerWidth, this.x));
-            this.y = Math.max(0, Math.min(maxHeight, this.y));
+            this.y = Math.max(0, Math.min(document.documentElement.scrollHeight, this.y));
         }
         
         draw() {
@@ -97,14 +80,7 @@ function createConstellationBackground() {
     function initDots() {
         dots = [];
         const width = window.innerWidth;
-        // Use Math.max to ensure we cover the entire page including footer
-        const height = Math.max(
-            document.documentElement.scrollHeight,
-            document.body.scrollHeight,
-            document.documentElement.offsetHeight,
-            document.body.offsetHeight,
-            document.documentElement.clientHeight
-        );
+        const height = document.documentElement.scrollHeight;
         // Use smaller divisor on mobile to get more dots
         const divisor = width <= 768 ? 8000 : 15000;
         const dotCount = Math.floor((width * height) / divisor);
@@ -153,10 +129,20 @@ function createConstellationBackground() {
         animationId = requestAnimationFrame(animate);
     }
     
-    // Handle window resize
+    // Handle window resize - preserve dots on height-only changes
     function handleResize() {
+        const oldWidth = canvas.width / (window.devicePixelRatio || 1);
+        
         resizeCanvas();
-        initDots();
+        
+        // Only reinitialize dots if width changed significantly (desktop resize)
+        // Don't reinit for mobile scroll-based height changes
+        const newWidth = window.innerWidth;
+        const widthChanged = Math.abs(newWidth - oldWidth) > 50;
+        
+        if (widthChanged) {
+            initDots();
+        }
     }
     
     // Initialize
@@ -167,19 +153,22 @@ function createConstellationBackground() {
     // Listen for resize
     window.addEventListener('resize', throttle(handleResize, 250));
     
-    // Update canvas height on scroll (for dynamic content)
-    let lastHeight = Math.max(
-        document.documentElement.scrollHeight,
-        document.body.scrollHeight
-    );
+    // Update canvas height on scroll (for dynamic content) - but preserve dots
+    let lastHeight = document.documentElement.scrollHeight;
     setInterval(() => {
-        const currentHeight = Math.max(
-            document.documentElement.scrollHeight,
-            document.body.scrollHeight
-        );
+        const currentHeight = document.documentElement.scrollHeight;
         if (currentHeight !== lastHeight) {
             lastHeight = currentHeight;
-            resizeCanvas();
+            // Just resize canvas dimensions, don't reinitialize dots
+            const dpr = window.devicePixelRatio || 1;
+            const width = window.innerWidth;
+            const height = document.documentElement.scrollHeight;
+            
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.scale(dpr, dpr);
         }
     }, 1000);
 }
