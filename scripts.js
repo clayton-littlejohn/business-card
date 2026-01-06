@@ -129,19 +129,18 @@ function createConstellationBackground() {
         animationId = requestAnimationFrame(animate);
     }
     
-    // Track last known width for resize detection
-    let lastKnownWidth = window.innerWidth;
-    
-    // Handle window resize - preserve dots on mobile scroll
+    // Handle window resize - preserve dots on height-only changes
     function handleResize() {
-        const currentWidth = window.innerWidth;
-        const widthChanged = Math.abs(currentWidth - lastKnownWidth) > 100;
+        const oldWidth = canvas.width / (window.devicePixelRatio || 1);
         
         resizeCanvas();
         
-        // Only reinitialize dots if width changed significantly (rotation/desktop resize)
+        // Only reinitialize dots if width changed significantly (desktop resize)
+        // Don't reinit for mobile scroll-based height changes
+        const newWidth = window.innerWidth;
+        const widthChanged = Math.abs(newWidth - oldWidth) > 50;
+        
         if (widthChanged) {
-            lastKnownWidth = currentWidth;
             initDots();
         }
     }
@@ -151,12 +150,27 @@ function createConstellationBackground() {
     initDots();
     animate();
     
-    // Listen for resize with longer throttle on mobile
-    const isMobile = window.innerWidth <= 768;
-    window.addEventListener('resize', throttle(handleResize, isMobile ? 500 : 250));
+    // Listen for resize
+    window.addEventListener('resize', throttle(handleResize, 250));
     
-    // Disable the height update interval - it's causing issues on mobile
-    // The canvas will be sized correctly initially and on actual resizes only
+    // Update canvas height on scroll (for dynamic content) - but preserve dots
+    let lastHeight = document.documentElement.scrollHeight;
+    setInterval(() => {
+        const currentHeight = document.documentElement.scrollHeight;
+        if (currentHeight !== lastHeight) {
+            lastHeight = currentHeight;
+            // Just resize canvas dimensions, don't reinitialize dots
+            const dpr = window.devicePixelRatio || 1;
+            const width = window.innerWidth;
+            const height = document.documentElement.scrollHeight;
+            
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.scale(dpr, dpr);
+        }
+    }, 1000);
 }
 
 // ============================================
