@@ -129,47 +129,20 @@ function createConstellationBackground() {
         animationId = requestAnimationFrame(animate);
     }
     
-    // Track dimensions and scroll state
-    let lastKnownWidth = window.innerWidth;
-    let lastKnownHeight = document.documentElement.scrollHeight;
-    let isScrolling = false;
-    let scrollTimeout;
-    
-    // Detect scrolling to prevent resize during scroll
-    window.addEventListener('scroll', () => {
-        isScrolling = true;
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            isScrolling = false;
-        }, 150);
-    }, { passive: true });
-    
-    // Handle window resize - only when not scrolling
+    // Handle window resize - preserve dots on height-only changes
     function handleResize() {
-        // Skip resize updates during mobile scrolling (prevents address bar flicker)
-        if (isScrolling && window.innerWidth <= 768) {
-            return;
-        }
-        
-        const currentWidth = window.innerWidth;
-        const currentHeight = document.documentElement.scrollHeight;
-        const widthChanged = Math.abs(currentWidth - lastKnownWidth) > 50;
-        const heightChanged = Math.abs(currentHeight - lastKnownHeight) > 100;
-        
-        // Only update if dimensions actually changed
-        if (!widthChanged && !heightChanged) {
-            return;
-        }
+        const oldWidth = canvas.width / (window.devicePixelRatio || 1);
         
         resizeCanvas();
         
-        // Only reinitialize dots on significant width changes (rotation/desktop resize)
+        // Only reinitialize dots if width changed significantly (desktop resize)
+        // Don't reinit for mobile scroll-based height changes
+        const newWidth = window.innerWidth;
+        const widthChanged = Math.abs(newWidth - oldWidth) > 50;
+        
         if (widthChanged) {
-            lastKnownWidth = currentWidth;
             initDots();
         }
-        
-        lastKnownHeight = currentHeight;
     }
     
     // Initialize
@@ -180,12 +153,24 @@ function createConstellationBackground() {
     // Listen for resize
     window.addEventListener('resize', throttle(handleResize, 250));
     
-    // Periodic check for content changes when not scrolling
+    // Update canvas height on scroll (for dynamic content) - but preserve dots
+    let lastHeight = document.documentElement.scrollHeight;
     setInterval(() => {
-        if (!isScrolling) {
-            handleResize();
+        const currentHeight = document.documentElement.scrollHeight;
+        if (currentHeight !== lastHeight) {
+            lastHeight = currentHeight;
+            // Just resize canvas dimensions, don't reinitialize dots
+            const dpr = window.devicePixelRatio || 1;
+            const width = window.innerWidth;
+            const height = document.documentElement.scrollHeight;
+            
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.scale(dpr, dpr);
         }
-    }, 2000);
+    }, 1000);
 }
 
 // ============================================
