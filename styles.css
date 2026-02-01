@@ -25,6 +25,18 @@ html {
     scroll-padding-top: 80px;
 }
 
+/* Fixed background layer to prevent any gaps on mobile overscroll */
+html::before {
+    content: '';
+    position: fixed;
+    top: -100px;
+    left: 0;
+    right: 0;
+    bottom: -100px;
+    background: var(--pure-black);
+    z-index: -1;
+}
+
 /* Base Reset and Body Styles */
 * {
     margin: 0;
@@ -47,10 +59,11 @@ body {
 body::after {
     content: '';
     position: fixed;
-    bottom: 0;
+    bottom: -100px; /* Extend beyond viewport for mobile overscroll */
     left: 0;
     width: 100%;
-    height: 100vh;    
+    height: calc(100vh + 200px);
+    height: calc(100dvh + 200px); /* Dynamic viewport height + buffer */
     background: 
         radial-gradient(ellipse 110% 35% at 0% 100%,
             rgba(26, 117, 222, 0.6) 0%,
@@ -65,7 +78,6 @@ body::after {
         radial-gradient(ellipse 65% 100% at center, var(--deep-black) 50%, var(--pure-black) 100%);
     z-index: 0;
     pointer-events: none;
-    contain: strict;
 }
 
 /* Constellation background canvas */
@@ -1251,6 +1263,7 @@ body::after {
 .footer-section {
 
     min-height: 100vh;
+    min-height: 100dvh;
 
     position: relative;
 
@@ -1265,6 +1278,8 @@ body::after {
     overflow: hidden;
 
     padding: 50px 20px;
+    padding-bottom: calc(50px + env(safe-area-inset-bottom, 0px)); /* iOS safe area */
+    background: transparent; /* Let through the body::after gradient */
 
 }
 
