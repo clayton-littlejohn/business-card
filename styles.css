@@ -23,6 +23,9 @@ html {
     -ms-overflow-style: none;
     background: var(--pure-black);
     scroll-padding-top: 80px;
+    min-height: 100%;
+    /* Safari overscroll: extend background beyond viewport */
+    background-attachment: fixed;
 }
 
 /* Safari overscroll fix - covers rubber band effect areas */
@@ -61,23 +64,24 @@ body {
 body::after {
     content: '';
     position: fixed;
-    bottom: 0;
+    top: -50vh;
+    bottom: -50vh;
     left: 0;
     width: 100%;
-    height: 100vh;
-    height: 100dvh;
+    height: 200vh;
+    height: 200dvh;
     background: 
-        radial-gradient(ellipse 110% 35% at 0% 100%,
+        radial-gradient(ellipse 110% 17.5% at 0% 75%,
             rgba(26, 117, 222, 0.6) 0%,
             rgba(59, 130, 246, 0.4) 15%,
             rgba(96, 165, 250, 0.2) 30%,
             transparent 100%),
-        radial-gradient(ellipse 110% 35% at 100% 100%,
+        radial-gradient(ellipse 110% 17.5% at 100% 75%,
             rgba(26, 117, 222, 0.6) 0%,
             rgba(59, 130, 246, 0.4) 15%,
             rgba(96, 165, 250, 0.2) 30%,
             transparent 100%),
-        radial-gradient(ellipse 65% 100% at center, var(--deep-black) 50%, var(--pure-black) 100%);
+        radial-gradient(ellipse 65% 50% at center 50%, var(--deep-black) 50%, var(--pure-black) 100%);
     z-index: 0;
     pointer-events: none;
 }
@@ -85,10 +89,10 @@ body::after {
 /* Constellation background canvas */
 #constellation-canvas {
     position: fixed;
-    top: 0;
+    /* top is set by JS to -500px for Safari overscroll coverage */
     left: 0;
     width: 100%;
-    /* Height controlled by JavaScript to match scrollHeight */
+    /* Height controlled by JavaScript to match scrollHeight + buffer */
     z-index: 1;
     pointer-events: none;
     opacity: 0.8;
