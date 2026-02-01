@@ -39,31 +39,22 @@ function createConstellationBackground() {
     
     // Set canvas size with proper DPR handling
     function resizeCanvas() {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap DPR for performance
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        // Use the maximum of scrollHeight and viewport height + very large buffer for Safari overscroll
-        const viewportHeight = window.innerHeight;
-        const scrollHeight = document.documentElement.scrollHeight;
-        // Add full viewport height as buffer for Safari's aggressive rubber-band effect
-        const topBuffer = viewportHeight; // Extra space above
-        const bottomBuffer = viewportHeight; // Extra space below
-        const height = Math.max(scrollHeight, viewportHeight) + topBuffer + bottomBuffer;
+        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
         
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
-        canvas.style.top = `-${topBuffer}px`; // Extend above viewport for Safari
-        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform before scaling
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
     }
     
     // Dot class
     class Dot {
         constructor() {
-            const viewportHeight = window.innerHeight;
-            const scrollHeight = document.documentElement.scrollHeight;
-            const height = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
+            const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
             this.x = Math.random() * window.innerWidth;
             this.y = Math.random() * height;
             this.vx = (Math.random() - 0.5) * 0.3;
@@ -89,9 +80,7 @@ function createConstellationBackground() {
     function initDots() {
         dots = [];
         const width = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const height = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
+        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
         // Reduced dot count for better performance
         const divisor = width <= 768 ? 12000 : 20000;
         const dotCount = Math.min(Math.floor((width * height) / divisor), 150);
@@ -137,9 +126,7 @@ function createConstellationBackground() {
         
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const height = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
+        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
         
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         
@@ -186,66 +173,17 @@ function createConstellationBackground() {
     // Listen for resize with debounce for better performance
     window.addEventListener('resize', debounce(handleResize, 250));
     
-    // Handle mobile viewport changes during scroll (address bar show/hide)
-    let lastCanvasHeight = canvas.height;
-    window.addEventListener('scroll', throttle(() => {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const viewportHeight = window.innerHeight;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const requiredHeight = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
-        const currentCanvasHeight = canvas.height / dpr;
-        
-        // Only resize if we need more height
-        if (requiredHeight > currentCanvasHeight) {
-            canvas.height = requiredHeight * dpr;
-            canvas.style.height = requiredHeight + 'px';
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.scale(dpr, dpr);
-        }
-    }, 200), { passive: true });
-    
     // Pause animation when tab is not visible
     document.addEventListener('visibilitychange', () => {
         isVisible = !document.hidden;
     });
     
-    // Update canvas height on scroll (for dynamic content) - use ResizeObserver if available
+    // Update canvas height when content changes - use ResizeObserver if available
     if (typeof ResizeObserver !== 'undefined') {
         const resizeObserver = new ResizeObserver(debounce(() => {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            const width = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const scrollHeight = document.documentElement.scrollHeight;
-            const height = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
-            
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.scale(dpr, dpr);
+            resizeCanvas();
         }, 500));
         resizeObserver.observe(document.body);
-    } else {
-        // Fallback to interval for older browsers
-        let lastHeight = document.documentElement.scrollHeight;
-        setInterval(() => {
-            const viewportHeight = window.innerHeight;
-            const scrollHeight = document.documentElement.scrollHeight;
-            const currentHeight = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
-            if (currentHeight !== lastHeight) {
-                lastHeight = currentHeight;
-                const dpr = Math.min(window.devicePixelRatio || 1, 2);
-                const width = window.innerWidth;
-                
-                canvas.width = width * dpr;
-                canvas.height = currentHeight * dpr;
-                canvas.style.width = width + 'px';
-                canvas.style.height = currentHeight + 'px';
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
-                ctx.scale(dpr, dpr);
-            }
-        }, 2000);
     }
 }
 

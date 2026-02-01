@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Clayton Littlejohn - Emerging Technology & Innovation at Nationwide Insurance. Exploring AI, connected devices, immersive experiences, and transformative technologies.">
+    <!-- Theme color for Safari/Chrome address bar and overscroll areas -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Clayton Littlejohn | Nationwide</title>
     
     <!-- Preconnect to external origins for faster font loading -->
@@ -19,6 +23,9 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+    <!-- Safari overscroll background fix - must be first element -->
+    <div class="safari-overscroll-fix" aria-hidden="true"></div>
+    
     <!-- Floating Background Elements -->
     <div class="global-floating-elements" id="globalFloatingElements"></div>
 
