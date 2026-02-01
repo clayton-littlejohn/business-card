@@ -37,16 +37,22 @@ function createConstellationBackground() {
     let animationId;
     let isVisible = true;
     
+    // Buffer for Safari overscroll (rubber-band effect)
+    const OVERSCROLL_BUFFER = 500;
+    
     // Set canvas size with proper DPR handling
     function resizeCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        // Add buffer above and below for Safari overscroll
+        const height = contentHeight + (OVERSCROLL_BUFFER * 2);
         
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
+        canvas.style.top = `-${OVERSCROLL_BUFFER}px`;
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
     }
@@ -54,7 +60,8 @@ function createConstellationBackground() {
     // Dot class
     class Dot {
         constructor() {
-            const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+            const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+            const height = contentHeight + (OVERSCROLL_BUFFER * 2);
             this.x = Math.random() * window.innerWidth;
             this.y = Math.random() * height;
             this.vx = (Math.random() - 0.5) * 0.3;
@@ -80,7 +87,8 @@ function createConstellationBackground() {
     function initDots() {
         dots = [];
         const width = window.innerWidth;
-        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        const height = contentHeight + (OVERSCROLL_BUFFER * 2);
         // Reduced dot count for better performance
         const divisor = width <= 768 ? 12000 : 20000;
         const dotCount = Math.min(Math.floor((width * height) / divisor), 150);
@@ -126,7 +134,8 @@ function createConstellationBackground() {
         
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        const height = contentHeight + (OVERSCROLL_BUFFER * 2);
         
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         
