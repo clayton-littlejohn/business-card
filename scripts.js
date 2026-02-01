@@ -61,25 +61,27 @@ function createConstellationBackground() {
     class Dot {
         constructor() {
             const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-            const height = contentHeight + (OVERSCROLL_BUFFER * 2);
+            // Canvas height includes buffer above and below
+            const canvasHeight = contentHeight + (OVERSCROLL_BUFFER * 2);
             this.x = Math.random() * window.innerWidth;
-            this.y = Math.random() * height;
+            // Y ranges from 0 to canvasHeight (0 = top of canvas which is -500px on screen)
+            this.y = Math.random() * canvasHeight;
             this.vx = (Math.random() - 0.5) * 0.3;
             this.vy = (Math.random() - 0.5) * 0.3;
             this.radius = Math.random() * 1.5 + 0.5;
         }
         
-        update(width, height) {
+        update(width, canvasHeight) {
             this.x += this.vx;
             this.y += this.vy;
             
-            // Bounce off edges
+            // Bounce off edges (full canvas including buffer areas)
             if (this.x < 0 || this.x > width) this.vx *= -1;
-            if (this.y < 0 || this.y > height) this.vy *= -1;
+            if (this.y < 0 || this.y > canvasHeight) this.vy *= -1;
             
             // Keep within bounds
             this.x = Math.max(0, Math.min(width, this.x));
-            this.y = Math.max(0, Math.min(height, this.y));
+            this.y = Math.max(0, Math.min(canvasHeight, this.y));
         }
     }
     
@@ -88,10 +90,10 @@ function createConstellationBackground() {
         dots = [];
         const width = window.innerWidth;
         const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-        const height = contentHeight + (OVERSCROLL_BUFFER * 2);
+        const canvasHeight = contentHeight + (OVERSCROLL_BUFFER * 2);
         // Reduced dot count for better performance
         const divisor = width <= 768 ? 12000 : 20000;
-        const dotCount = Math.min(Math.floor((width * height) / divisor), 150);
+        const dotCount = Math.min(Math.floor((width * canvasHeight) / divisor), 150);
         for (let i = 0; i < dotCount; i++) {
             dots.push(new Dot());
         }
@@ -135,13 +137,13 @@ function createConstellationBackground() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
         const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-        const height = contentHeight + (OVERSCROLL_BUFFER * 2);
+        const canvasHeight = contentHeight + (OVERSCROLL_BUFFER * 2);
         
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         
         // Update dots
         for (let i = 0; i < dots.length; i++) {
-            dots[i].update(width, height);
+            dots[i].update(width, canvasHeight);
         }
         
         // Batch draw all dots with single fillStyle
