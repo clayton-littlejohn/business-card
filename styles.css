@@ -23,16 +23,19 @@ html {
     -ms-overflow-style: none;
     background: var(--pure-black);
     scroll-padding-top: 80px;
+    /* Prevent overscroll bounce from showing gaps */
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
 }
 
 /* Fixed background layer to prevent any gaps on mobile overscroll */
 html::before {
     content: '';
     position: fixed;
-    top: -100px;
-    left: 0;
-    right: 0;
-    bottom: -100px;
+    top: -50vh;
+    left: -10px;
+    right: -10px;
+    bottom: -50vh;
     background: var(--pure-black);
     z-index: -1;
 }
@@ -49,21 +52,26 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
+    min-height: -webkit-fill-available; /* Safari fallback */
     min-height: 100dvh; /* Dynamic viewport height for mobile */
     position: relative;
     overflow-x: hidden;
     background: var(--pure-black); /* Fallback background */
+    /* Prevent overscroll bounce */
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
 }
 
 /* Vintage blue vignette effect from bottom corners */
 body::after {
     content: '';
     position: fixed;
-    bottom: -100px; /* Extend beyond viewport for mobile overscroll */
-    left: 0;
-    width: 100%;
-    height: calc(100vh + 200px);
-    height: calc(100dvh + 200px); /* Dynamic viewport height + buffer */
+    bottom: -50vh; /* Extend far beyond viewport for Safari overscroll */
+    left: -10px;
+    right: -10px;
+    width: auto;
+    height: calc(100vh + 100vh); /* Double viewport height */
+    height: calc(100dvh + 100dvh); /* Dynamic viewport height version */
     background: 
         radial-gradient(ellipse 110% 35% at 0% 100%,
             rgba(26, 117, 222, 0.6) 0%,
@@ -83,7 +91,7 @@ body::after {
 /* Constellation background canvas */
 #constellation-canvas {
     position: fixed;
-    top: 0;
+    top: -50vh; /* Extend above viewport for Safari */
     left: 0;
     width: 100%;
     /* Height controlled by JavaScript to match scrollHeight */

@@ -41,16 +41,19 @@ function createConstellationBackground() {
     function resizeCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap DPR for performance
         const width = window.innerWidth;
-        // Use the maximum of scrollHeight and viewport height + large buffer for mobile overscroll
+        // Use the maximum of scrollHeight and viewport height + very large buffer for Safari overscroll
         const viewportHeight = window.innerHeight;
         const scrollHeight = document.documentElement.scrollHeight;
-        const height = Math.max(scrollHeight, viewportHeight) + 300; // Large buffer for mobile overscroll
+        // Add full viewport height as buffer for Safari's aggressive rubber-band effect
+        const topBuffer = viewportHeight; // Extra space above
+        const bottomBuffer = viewportHeight; // Extra space below
+        const height = Math.max(scrollHeight, viewportHeight) + topBuffer + bottomBuffer;
         
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
-        canvas.style.top = '-100px'; // Extend above viewport too
+        canvas.style.top = `-${topBuffer}px`; // Extend above viewport for Safari
         ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform before scaling
         ctx.scale(dpr, dpr);
     }
@@ -58,7 +61,9 @@ function createConstellationBackground() {
     // Dot class
     class Dot {
         constructor() {
-            const height = Math.max(document.documentElement.scrollHeight, window.innerHeight) + 300;
+            const viewportHeight = window.innerHeight;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const height = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
             this.x = Math.random() * window.innerWidth;
             this.y = Math.random() * height;
             this.vx = (Math.random() - 0.5) * 0.3;
@@ -84,7 +89,9 @@ function createConstellationBackground() {
     function initDots() {
         dots = [];
         const width = window.innerWidth;
-        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight) + 300;
+        const viewportHeight = window.innerHeight;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const height = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
         // Reduced dot count for better performance
         const divisor = width <= 768 ? 12000 : 20000;
         const dotCount = Math.min(Math.floor((width * height) / divisor), 150);
@@ -130,7 +137,9 @@ function createConstellationBackground() {
         
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight) + 300;
+        const viewportHeight = window.innerHeight;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const height = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
         
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         
@@ -181,7 +190,9 @@ function createConstellationBackground() {
     let lastCanvasHeight = canvas.height;
     window.addEventListener('scroll', throttle(() => {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const requiredHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight) + 300;
+        const viewportHeight = window.innerHeight;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const requiredHeight = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
         const currentCanvasHeight = canvas.height / dpr;
         
         // Only resize if we need more height
@@ -203,7 +214,9 @@ function createConstellationBackground() {
         const resizeObserver = new ResizeObserver(debounce(() => {
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
             const width = window.innerWidth;
-            const height = Math.max(document.documentElement.scrollHeight, window.innerHeight) + 300;
+            const viewportHeight = window.innerHeight;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const height = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
             
             canvas.width = width * dpr;
             canvas.height = height * dpr;
@@ -217,7 +230,9 @@ function createConstellationBackground() {
         // Fallback to interval for older browsers
         let lastHeight = document.documentElement.scrollHeight;
         setInterval(() => {
-            const currentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight) + 300;
+            const viewportHeight = window.innerHeight;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const currentHeight = Math.max(scrollHeight, viewportHeight) + viewportHeight * 2;
             if (currentHeight !== lastHeight) {
                 lastHeight = currentHeight;
                 const dpr = Math.min(window.devicePixelRatio || 1, 2);
