@@ -1,205 +1,112 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
-
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta name="description" content="Clayton Littlejohn - Emerging Technology & Innovation at Nationwide Insurance. Exploring AI, connected devices, immersive experiences, and transformative technologies.">
     <title>Clayton Littlejohn | Nationwide</title>
-
-    <link rel="preload" href="./assets/images/logo.png" as="image" crossorigin="anonymous">
-
-    <link rel="icon" type="image/x-icon" href="assets/images/nationwide-favicon.ico">
-
-    <link
-
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap"
-
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="./styles.css">
     
-    <script src="./scripts.js"></script>
-
+    <!-- Preconnect to external origins for faster font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="./assets/images/logo.png" as="image">
+    <link rel="preload" href="./assets/images/headshot.jpg" as="image">
+    
+    <link rel="icon" type="image/x-icon" href="./assets/images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
 </head>
-
-
-
 <body>
-
     <!-- Floating Background Elements -->
-
     <div class="global-floating-elements" id="globalFloatingElements"></div>
 
-
-
     <!-- Professional Navigation -->
-
     <nav class="main-nav">
-
         <div class="nav-container">
-
             <div class="nav-brand">
-
                 <a href="#" class="nav-brand-link">
-
                     <div class="nav-logo">
-
-                        <img src="assets/images/logo.png" alt="Logo" class="nav-logo-img" loading="eager">
-
+                        <img src="./assets/images/logo.png" alt="Nationwide Logo" class="nav-logo-img" width="40" height="40" decoding="async">
                     </div>
-
                     <div>
-
                         <div class="nav-title">Clayton Littlejohn</div>
-
                         <div class="nav-subtitle">Nationwide | Emerging Technology</div>
-
                     </div>
-
                 </a>
-
             </div>
-
             <div class="nav-right">
-
                 <div class="nav-actions">
+                    <button class="nav-fullscreen" id="navFullscreen" aria-label="Toggle fullscreen mode">
 
-                    <button class="nav-fullscreen" id="navFullscreen">
-
-                        <svg class="fullscreen-icon fullscreen-enter" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
+                        <svg class="fullscreen-icon fullscreen-enter" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="m21 21-6-6m6 6v-4.8m0 4.8h-4.8"></path>
-
                             <path d="M3 16.2V21m0 0h4.8M3 21l6-6"></path>
-
                             <path d="M21 7.8V3m0 0h-4.8M21 3l-6 6"></path>
-
                             <path d="M3 7.8V3m0 0h4.8M3 3l6 6"></path>
-
                         </svg>
-
-                        <svg class="fullscreen-icon fullscreen-exit" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
+                        <svg class="fullscreen-icon fullscreen-exit" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
-
                             <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
-
                             <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
-
                             <path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
-
                         </svg>
-
                     </button>
-
                 </div>
-
             </div>
-
         </div>
-
     </nav>
 
-
-
     <!-- Hero Header -->
-
     <section id="hero" class="hero-header">
-
         <div class="floating-elements"></div>
 
-
-
         <!-- Profile Information -->
-
         <div class="profile-header">
-
             <div class="profile-container">
-
                 <div class="profile-frame">
-
-                    <img src="assets/images/headshot.jpg" class="profile-img" loading="eager">
-
+                    <img src="./assets/images/headshot.jpg" alt="Clayton Littlejohn" class="profile-img" width="200" height="200" fetchpriority="high">
                 </div>
-
             </div>
-
             <h1 class="hero-title">Clayton Littlejohn</h1>
-
             <div class="subtitle-divider"></div>
-
             <p class="hero-subtitle animated-subtitle">Nationwide Insurance</p>
-
             <p class="subtitle animated-subtitle">Emerging Technology & Innovation</p>
-
         </div>
-
-
 
         <!-- Scroll Indicator -->
-
-        <div class="scroll-indicator"
-
-            onclick="document.querySelector('.content-wrapper').scrollIntoView({behavior: 'smooth'})">
-
+        <div class="scroll-indicator" onclick="document.querySelector('.content-wrapper').scrollIntoView({behavior: 'smooth'})">
             <span>Scroll Down</span>
-
             <div class="scroll-arrow"></div>
-
         </div>
-
     </section>
 
-
-
     <!-- Content Sections -->
-
     <div class="content-wrapper">
-
         <div class="container">
-
             <!-- Overview Section -->
-
             <section id="overview" class="content-section fade-in">
-
                 <div class="section-header">
-
                     <div class="section-title">Summary & Focus Areas</div>
-
                 </div>
 
-
-
                 <!-- Overview Tab Content -->
-
                 <div class="tab-content active" id="overview-tab">
-
                     <div class="section-content">
-
                         <div class="focus-area-subsection">
-
                             <div class="summary-container" style="display: block; padding-left: 2.5rem; padding-right: 2.5rem;">
-
                                 <div class="summary-content">
-
                                     <h3 class="subsection-header">Emerging Technology & Innovation at Nationwide</h3>
-
                                     <p>
-
-                                        Our team identifies and evaluates transformative technologies for redefining customer experiences, internal operations, and workplace transformation. Rethinking insurance through disruptive technologies, we drive emerging innovations into reality through research, 90-day experiments, and strategic partnerships.
-
+                                        Our team identifies and evaluates transformative technologies for redefining
+                                        customer experiences, internal operations, and workplace transformation.
+                                        Rethinking insurance through disruptive technologies, we drive emerging
+                                        innovations into reality through research, 90-day experiments, and strategic
+                                        partnerships.
                                     </p>
-
                                 </div>
-
                             </div>
-
                         </div>
 
 
@@ -220,11 +127,20 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> Simulation, TRISM, Agentic, Artificial General Intelligence, Causal, Composite, Computer Vision, Emotion, Everyday, First-Principles, Generative, GraphRAG, Influence, Neuro-Symbolic, Physical AI, Synthetic Data</p>
+                                        <p class="area-description"><strong>Primary:</strong> Simulation, TRISM,
+                                            Agentic, Artificial General Intelligence, Causal, Composite, Computer
+                                            Vision, Emotion, Everyday, First-Principles, Generative, GraphRAG,
+                                            Influence, Neuro-Symbolic, Physical AI, Synthetic Data</p>
 
-                                        <p class="area-description"><strong>Insurance Applications:</strong> Risk Assessment Models, Customer Service Chatbots, NLP for Policy Documents, Fraud Detection, Code Assistants, Role-Based Assistants, Multiagent Systems, Virtual Assistants, Augmented Software Engineering, Large Action Models</p>
+                                        <p class="area-description"><strong>Insurance Applications:</strong> Risk
+                                            Assessment Models, Customer Service Chatbots, NLP for Policy Documents,
+                                            Fraud Detection, Code Assistants, Role-Based Assistants, Multiagent Systems,
+                                            Virtual Assistants, Augmented Software Engineering, Large Action Models</p>
 
-                                        <p class="area-description"><strong>Physical AI & Robotics:</strong> Robotic Claims Inspectors, Autonomous Drones for Property Assessment, Humanoid Service Robots, Automated Warehouse Robotics, Disaster Response Robots, Physical Inspection Automation, Embodied AI Agents</p>
+                                        <p class="area-description"><strong>Physical AI & Robotics:</strong> Robotic
+                                            Claims Inspectors, Autonomous Drones for Property Assessment, Humanoid
+                                            Service Robots, Automated Warehouse Robotics, Disaster Response Robots,
+                                            Physical Inspection Automation, Embodied AI Agents</p>
 
                                     </div>
 
@@ -242,9 +158,14 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> Behavioral Analytics, Commercial UAVs, Digital Twins, Digital Wellness Platforms, Embedded Insurance, IoT, Lone Worker Protection, Machine Customers, Quantum Sensors, Smart Factory, Smart Home, Smart Spaces, Telematics, Wearables</p>
+                                        <p class="area-description"><strong>Primary:</strong> Behavioral Analytics,
+                                            Commercial UAVs, Digital Twins, Digital Wellness Platforms, Embedded
+                                            Insurance, IoT, Lone Worker Protection, Machine Customers, Quantum Sensors,
+                                            Smart Factory, Smart Home, Smart Spaces, Telematics, Wearables</p>
 
-                                        <p class="area-description"><strong>Applications:</strong> Usage-Based Insurance (UBI), Connected Vehicles, Weather/Environmental Sensors, Smart Cities, Fleet Management</p>
+                                        <p class="area-description"><strong>Applications:</strong> Usage-Based Insurance
+                                            (UBI), Connected Vehicles, Weather/Environmental Sensors, Smart Cities,
+                                            Fleet Management</p>
 
                                     </div>
 
@@ -262,9 +183,14 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> AI Avatar of Employees, Augmented Reality, Bidirectional Brain-Machine Interface, Conversational User Interfaces, Immersive Experience, Metaverse, Mixed Reality, Multimodal UIs, Panoptic Personalization, Spatial Computing, Superapps, Virtual Reality</p>
+                                        <p class="area-description"><strong>Primary:</strong> AI Avatar of Employees,
+                                            Augmented Reality, Bidirectional Brain-Machine Interface, Conversational
+                                            User Interfaces, Immersive Experience, Metaverse, Mixed Reality, Multimodal
+                                            UIs, Panoptic Personalization, Spatial Computing, Superapps, Virtual Reality
+                                        </p>
 
-                                        <p class="area-description"><strong>Insurance Applications:</strong> AR for Insurance, Conversational AI Platforms, Immersive Meetings</p>
+                                        <p class="area-description"><strong>Insurance Applications:</strong> AR for
+                                            Insurance, Conversational AI Platforms, Immersive Meetings</p>
 
                                     </div>
 
@@ -282,9 +208,13 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> AI Supercomputing, Autonomic Systems, Deep Neural Network ASICs, Edge Computing, Neuromorphic Computing, Photonic Computing, Postquantum Cryptography, Quantum Computing, Quantum Networking</p>
+                                        <p class="area-description"><strong>Primary:</strong> AI Supercomputing,
+                                            Autonomic Systems, Deep Neural Network ASICs, Edge Computing, Neuromorphic
+                                            Computing, Photonic Computing, Postquantum Cryptography, Quantum Computing,
+                                            Quantum Networking</p>
 
-                                        <p class="area-description"><strong>Applications:</strong> Edge AI Hardware, Edge GenAI, Mobility Optimization, Key Distribution</p>
+                                        <p class="area-description"><strong>Applications:</strong> Edge AI Hardware,
+                                            Edge GenAI, Mobility Optimization, Key Distribution</p>
 
                                     </div>
 
@@ -302,9 +232,14 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> Augmented Connected Workforce, Digital Adoption Platforms, Digital Experience Platforms, Virtually Facilitated Social Connections, Workforce Analytics, Workforce Nudgetech, Workplace Experience Apps, Workstyle Analytics</p>
+                                        <p class="area-description"><strong>Primary:</strong> Augmented Connected
+                                            Workforce, Digital Adoption Platforms, Digital Experience Platforms,
+                                            Virtually Facilitated Social Connections, Workforce Analytics, Workforce
+                                            Nudgetech, Workplace Experience Apps, Workstyle Analytics</p>
 
-                                        <p class="area-description"><strong>Enterprise Applications:</strong> Collaboration Platforms, Agent Performance Analytics, Remote Work Technologies, Contact Center AI, Knowledge Management Systems</p>
+                                        <p class="area-description"><strong>Enterprise Applications:</strong>
+                                            Collaboration Platforms, Agent Performance Analytics, Remote Work
+                                            Technologies, Contact Center AI, Knowledge Management Systems</p>
 
                                     </div>
 
@@ -322,9 +257,13 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> Decentralized Finance (DeFi), Decentralized Applications, Decentralized Autonomous Organization, Decentralized Identity, Smart Contracts, Web 2.5, Web 3</p>
+                                        <p class="area-description"><strong>Primary:</strong> Decentralized Finance
+                                            (DeFi), Decentralized Applications, Decentralized Autonomous Organization,
+                                            Decentralized Identity, Smart Contracts, Web 2.5, Web 3</p>
 
-                                        <p class="area-description"><strong>Insurance Applications:</strong> Smart Contracts for Claims, Parametric Insurance, Fraud Prevention, Reinsurance Settlements, Decentralized Identity Verification</p>
+                                        <p class="area-description"><strong>Insurance Applications:</strong> Smart
+                                            Contracts for Claims, Parametric Insurance, Fraud Prevention, Reinsurance
+                                            Settlements, Decentralized Identity Verification</p>
 
                                     </div>
 
@@ -342,9 +281,15 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> Zero Trust Architecture, Threat Intelligence, Security AI, Identity & Access Management, Data Loss Prevention, Security Orchestration, Automated Response (SOAR), Extended Detection & Response (XDR), Behavioral Biometrics</p>
+                                        <p class="area-description"><strong>Primary:</strong> Zero Trust Architecture,
+                                            Threat Intelligence, Security AI, Identity & Access Management, Data Loss
+                                            Prevention, Security Orchestration, Automated Response (SOAR), Extended
+                                            Detection & Response (XDR), Behavioral Biometrics</p>
 
-                                        <p class="area-description"><strong>Insurance Applications:</strong> Cyber Insurance Risk Assessment, Claims Fraud Detection, Breach Detection & Response, Third-Party Risk Management, Compliance Monitoring, Security Posture Assessment</p>
+                                        <p class="area-description"><strong>Insurance Applications:</strong> Cyber
+                                            Insurance Risk Assessment, Claims Fraud Detection, Breach Detection &
+                                            Response, Third-Party Risk Management, Compliance Monitoring, Security
+                                            Posture Assessment</p>
 
                                     </div>
 
@@ -362,9 +307,14 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> Data Fabric, Data Mesh, Real-time Analytics, Predictive Analytics, Customer Data Platforms, Master Data Management, Data Observability, Graph Analytics, Streaming Analytics</p>
+                                        <p class="area-description"><strong>Primary:</strong> Data Fabric, Data Mesh,
+                                            Real-time Analytics, Predictive Analytics, Customer Data Platforms, Master
+                                            Data Management, Data Observability, Graph Analytics, Streaming Analytics
+                                        </p>
 
-                                        <p class="area-description"><strong>Insurance Applications:</strong> Customer Lifetime Value Modeling, Loss Prediction, Portfolio Analytics, Risk Scoring, Customer Segmentation</p>
+                                        <p class="area-description"><strong>Insurance Applications:</strong> Customer
+                                            Lifetime Value Modeling, Loss Prediction, Portfolio Analytics, Risk Scoring,
+                                            Customer Segmentation</p>
 
                                     </div>
 
@@ -382,9 +332,14 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> Multi-cloud Strategy, Hybrid Cloud, Cloud-native Development, Serverless Computing, API Management, Microservices Architecture, Infrastructure as Code, Container Orchestration, Service Mesh</p>
+                                        <p class="area-description"><strong>Primary:</strong> Multi-cloud Strategy,
+                                            Hybrid Cloud, Cloud-native Development, Serverless Computing, API
+                                            Management, Microservices Architecture, Infrastructure as Code, Container
+                                            Orchestration, Service Mesh</p>
 
-                                        <p class="area-description"><strong>Enterprise Applications:</strong> Cloud-native Insurance Platforms, API-first Integration, Distributed System Architecture, Cloud Cost Optimization, Multi-region Deployment</p>
+                                        <p class="area-description"><strong>Enterprise Applications:</strong>
+                                            Cloud-native Insurance Platforms, API-first Integration, Distributed System
+                                            Architecture, Cloud Cost Optimization, Multi-region Deployment</p>
 
                                     </div>
 
@@ -402,9 +357,15 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> Robotic Process Automation (RPA), Intelligent Document Processing, Business Process Automation, Hyperautomation, Process Mining, Low-Code/No-Code Platforms, Workflow Orchestration</p>
+                                        <p class="area-description"><strong>Primary:</strong> Robotic Process Automation
+                                            (RPA), Intelligent Document Processing, Business Process Automation,
+                                            Hyperautomation, Process Mining, Low-Code/No-Code Platforms, Workflow
+                                            Orchestration</p>
 
-                                        <p class="area-description"><strong>Insurance Applications:</strong> Claims Processing Automation, Policy Administration Automation, Document Classification & Extraction, Automated Underwriting Workflows, Invoice Processing</p>
+                                        <p class="area-description"><strong>Insurance Applications:</strong> Claims
+                                            Processing Automation, Policy Administration Automation, Document
+                                            Classification & Extraction, Automated Underwriting Workflows, Invoice
+                                            Processing</p>
 
                                     </div>
 
@@ -422,9 +383,14 @@
 
                                     <div class="area-content">
 
-                                        <p class="area-description"><strong>Primary:</strong> RegTech, InsurTech Compliance, Automated Reporting, KYC/AML Technologies, Audit Trail Automation, Compliance Analytics, Regulatory Change Management, Privacy Management Platforms</p>
+                                        <p class="area-description"><strong>Primary:</strong> RegTech, InsurTech
+                                            Compliance, Automated Reporting, KYC/AML Technologies, Audit Trail
+                                            Automation, Compliance Analytics, Regulatory Change Management, Privacy
+                                            Management Platforms</p>
 
-                                        <p class="area-description"><strong>Enterprise Applications:</strong> Real-time Compliance Monitoring, Policy Compliance Verification, Consumer Privacy Management, Regulatory Sandbox Testing</p>
+                                        <p class="area-description"><strong>Enterprise Applications:</strong> Real-time
+                                            Compliance Monitoring, Policy Compliance Verification, Consumer Privacy
+                                            Management, Regulatory Sandbox Testing</p>
 
                                     </div>
 
@@ -433,113 +399,59 @@
                             </div>
 
                         </div>
-
                     </div>
-
                 </div>
-
             </section>
-
         </div>
-
     </div>
 
-
-
     <!-- Footer Section -->
-
     <footer class="footer-section">
-
         <div class="footer-content">
-
             <div class="footer-header">
-
                 <h2 class="footer-title">Reimagine Possibility</h2>
-
                 <p class="subtitle">Transforming Customer Experiences through Emerging Technologies</p>
-
             </div>
-
-
 
             <div class="footer-contact-grid">
-
                 <a href="mailto:littlc7@nationwide.com" class="footer-contact-item">
-
                     <div class="footer-contact-icon">
-
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-
                             <polyline points="22,6 12,13 2,6"/>
-
                         </svg>
-
                     </div>
-
                     <div class="footer-contact-label">Email</div>
-
                     <div class="footer-contact-value">littlc7@nationwide.com</div>
-
                 </a>
-
-                <a href="https://linkedin.com/in/clayton-littlejohn-101" class="footer-contact-item" target="_blank">
-
+                <a href="https://linkedin.com/in/clayton-littlejohn-101" class="footer-contact-item" target="_blank" rel="noopener noreferrer">
                     <div class="footer-contact-icon">
-
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-
                         </svg>
-
                     </div>
-
                     <div class="footer-contact-label">LinkedIn</div>
-
                     <div class="footer-contact-value">clayton-littlejohn-101</div>
-
                 </a>
-
                 <a href="tel:+14192174630" class="footer-contact-item">
-
                     <div class="footer-contact-icon">
-
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-
                         </svg>
-
                     </div>
-
                     <div class="footer-contact-label">Phone</div>
-
                     <div class="footer-contact-value">(419) 217-4630</div>
-
                 </a>
-
             </div>
-
-
 
             <div class="footer-bottom">
-
                 <span>© 2026 Clayton Littlejohn</span>
-
                 <span class="footer-divider">|</span>
-
                 <span>Emerging Technology & Innovation @ Nationwide</span>
-
             </div>
-
         </div>
-
     </footer>
 
+    <script src="./scripts.js" defer></script>
 </body>
-
-
-
 </html>

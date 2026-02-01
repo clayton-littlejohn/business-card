@@ -1,3 +1,5 @@
+'use strict';
+
 // ============================================
 // UTILITY FUNCTIONS
 // ============================================
@@ -13,6 +15,14 @@ function throttle(func, limit) {
     };
 }
 
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
 // ============================================
 // CONSTELLATION BACKGROUND
 // ============================================
@@ -22,32 +32,27 @@ function createConstellationBackground() {
     canvas.id = 'constellation-canvas';
     document.body.prepend(canvas);
     
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     let dots = [];
     let animationId;
+    let isVisible = true;
     
     // Set canvas size with proper DPR handling
     function resizeCanvas() {
-        const dpr = window.devicePixelRatio || 1;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap DPR for performance
         const width = window.innerWidth;
         const height = document.documentElement.scrollHeight;
         
-        // Set actual canvas size (scaled for DPR)
         canvas.width = width * dpr;
         canvas.height = height * dpr;
-        
-        // Set display size (CSS pixels)
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
-        
-        // Scale context to match DPR
         ctx.scale(dpr, dpr);
     }
     
     // Dot class
     class Dot {
         constructor() {
-            // Use CSS pixel dimensions for positioning
             this.x = Math.random() * window.innerWidth;
             this.y = Math.random() * document.documentElement.scrollHeight;
             this.vx = (Math.random() - 0.5) * 0.3;
@@ -55,24 +60,17 @@ function createConstellationBackground() {
             this.radius = Math.random() * 1.5 + 0.5;
         }
         
-        update() {
+        update(width, height) {
             this.x += this.vx;
             this.y += this.vy;
             
-            // Bounce off edges (use CSS pixel dimensions)
-            if (this.x < 0 || this.x > window.innerWidth) this.vx *= -1;
-            if (this.y < 0 || this.y > document.documentElement.scrollHeight) this.vy *= -1;
+            // Bounce off edges
+            if (this.x < 0 || this.x > width) this.vx *= -1;
+            if (this.y < 0 || this.y > height) this.vy *= -1;
             
             // Keep within bounds
-            this.x = Math.max(0, Math.min(window.innerWidth, this.x));
-            this.y = Math.max(0, Math.min(document.documentElement.scrollHeight, this.y));
-        }
-        
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(59, 130, 246, 0.6)';
-            ctx.fill();
+            this.x = Math.max(0, Math.min(width, this.x));
+            this.y = Math.max(0, Math.min(height, this.y));
         }
     }
     
@@ -81,25 +79,30 @@ function createConstellationBackground() {
         dots = [];
         const width = window.innerWidth;
         const height = document.documentElement.scrollHeight;
-        // Use smaller divisor on mobile to get more dots
-        const divisor = width <= 768 ? 8000 : 15000;
-        const dotCount = Math.floor((width * height) / divisor);
+        // Reduced dot count for better performance
+        const divisor = width <= 768 ? 12000 : 20000;
+        const dotCount = Math.min(Math.floor((width * height) / divisor), 150);
         for (let i = 0; i < dotCount; i++) {
             dots.push(new Dot());
         }
     }
     
-    // Draw connections between nearby dots
+    // Draw connections between nearby dots (optimized)
     function drawConnections() {
         const maxDistance = 150;
+        const maxDistanceSq = maxDistance * maxDistance;
+        
+        ctx.lineWidth = 0.5;
         
         for (let i = 0; i < dots.length; i++) {
             for (let j = i + 1; j < dots.length; j++) {
                 const dx = dots[i].x - dots[j].x;
                 const dy = dots[i].y - dots[j].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+                // Use squared distance to avoid sqrt
+                const distanceSq = dx * dx + dy * dy;
                 
-                if (distance < maxDistance) {
+                if (distanceSq < maxDistanceSq) {
+                    const distance = Math.sqrt(distanceSq);
                     const opacity = (1 - distance / maxDistance) * 0.3;
                     ctx.beginPath();
                     ctx.strokeStyle = `rgba(26, 117, 222, ${opacity})`;
@@ -112,16 +115,31 @@ function createConstellationBackground() {
         }
     }
     
-    // Animation loop
+    // Animation loop with visibility optimization
     function animate() {
-        const dpr = window.devicePixelRatio || 1;
+        if (!isVisible) {
+            animationId = requestAnimationFrame(animate);
+            return;
+        }
+        
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const width = window.innerWidth;
+        const height = document.documentElement.scrollHeight;
+        
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         
-        // Update and draw dots
-        dots.forEach(dot => {
-            dot.update();
-            dot.draw();
-        });
+        // Update dots
+        for (let i = 0; i < dots.length; i++) {
+            dots[i].update(width, height);
+        }
+        
+        // Batch draw all dots with single fillStyle
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.6)';
+        for (let i = 0; i < dots.length; i++) {
+            ctx.beginPath();
+            ctx.arc(dots[i].x, dots[i].y, dots[i].radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
         
         // Draw connections
         drawConnections();
@@ -150,17 +168,18 @@ function createConstellationBackground() {
     initDots();
     animate();
     
-    // Listen for resize
-    window.addEventListener('resize', throttle(handleResize, 250));
+    // Listen for resize with debounce for better performance
+    window.addEventListener('resize', debounce(handleResize, 250));
     
-    // Update canvas height on scroll (for dynamic content) - but preserve dots
-    let lastHeight = document.documentElement.scrollHeight;
-    setInterval(() => {
-        const currentHeight = document.documentElement.scrollHeight;
-        if (currentHeight !== lastHeight) {
-            lastHeight = currentHeight;
-            // Just resize canvas dimensions, don't reinitialize dots
-            const dpr = window.devicePixelRatio || 1;
+    // Pause animation when tab is not visible
+    document.addEventListener('visibilitychange', () => {
+        isVisible = !document.hidden;
+    });
+    
+    // Update canvas height on scroll (for dynamic content) - use ResizeObserver if available
+    if (typeof ResizeObserver !== 'undefined') {
+        const resizeObserver = new ResizeObserver(debounce(() => {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
             const width = window.innerWidth;
             const height = document.documentElement.scrollHeight;
             
@@ -169,44 +188,25 @@ function createConstellationBackground() {
             canvas.style.width = width + 'px';
             canvas.style.height = height + 'px';
             ctx.scale(dpr, dpr);
-        }
-    }, 1000);
-}
-
-// ============================================
-// FLOATING BACKGROUND ELEMENTS
-// ============================================
-
-function createFloatingElements() {
-    const container = document.getElementById('globalFloatingElements');
-    if (!container) return;
-    
-    const elementCount = window.innerWidth <= 768 ? 10 : 20;
-    const opacity = 0.3 + Math.random() * 0.5;
-    
-    // Create triangle
-    const triangle = document.createElement('div');
-    triangle.className = 'float-element float-triangle';
-    triangle.style.left = Math.random() * 100 + '%';
-    triangle.style.top = Math.random() * 100 + '%';
-    triangle.style.animationDelay = Math.random() * 8 + 's';
-    triangle.style.animationDuration = (Math.random() * 4 + 6) + 's';
-    triangle.style.setProperty('--float-opacity', opacity);
-    container.appendChild(triangle);
-
-    // Create circles and rectangles
-    for (let i = 0; i < elementCount; i++) {
-        const element = document.createElement('div');
-        const isCircle = Math.random() > 0.6;
-        
-        element.className = `float-element ${isCircle ? 'float-circle' : 'float-rect'}`;
-        element.style.left = Math.random() * 100 + '%';
-        element.style.top = Math.random() * 100 + '%';
-        element.style.animationDelay = Math.random() * 8 + 's';
-        element.style.animationDuration = (Math.random() * 4 + 6) + 's';
-        element.style.setProperty('--float-opacity', opacity);
-
-        container.appendChild(element);
+        }, 500));
+        resizeObserver.observe(document.body);
+    } else {
+        // Fallback to interval for older browsers
+        let lastHeight = document.documentElement.scrollHeight;
+        setInterval(() => {
+            const currentHeight = document.documentElement.scrollHeight;
+            if (currentHeight !== lastHeight) {
+                lastHeight = currentHeight;
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                const width = window.innerWidth;
+                
+                canvas.width = width * dpr;
+                canvas.height = currentHeight * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = currentHeight + 'px';
+                ctx.scale(dpr, dpr);
+            }
+        }, 2000);
     }
 }
 
@@ -301,10 +301,13 @@ function updateFullscreenButton() {
 // ============================================
 
 function initializeScrollHandling() {
+    const mainNav = document.querySelector('.main-nav');
+    if (!mainNav) return;
+    
+    // Cache computed values
+    const isDesktop = window.innerWidth > 768;
+    
     const handleScroll = throttle(() => {
-        const mainNav = document.querySelector('.main-nav');
-        if (!mainNav) return;
-        
         const scrollDistance = Math.min(window.scrollY, 150);
         const opacity = scrollDistance / 150;
         
@@ -318,11 +321,7 @@ function initializeScrollHandling() {
                                            0 0 0 1px rgba(59, 130, 246, ${0.1 * opacity})`;
                 
                 // Only apply backdrop-filter on desktop
-                if (window.innerWidth > 768) {
-                    mainNav.style.backdropFilter = `blur(${25 * opacity}px)`;
-                } else {
-                    mainNav.style.backdropFilter = 'none';
-                }
+                mainNav.style.backdropFilter = isDesktop ? `blur(${25 * opacity}px)` : 'none';
             } else {
                 mainNav.style.background = 'transparent';
                 mainNav.style.backdropFilter = 'none';
@@ -371,7 +370,6 @@ function initializeAnimationObservers() {
 
 function initializeApp() {
     createConstellationBackground();
-    // createFloatingElements(); // Disabled - using constellation background instead
     initializeFullscreen();
     initializeScrollHandling();
     initializeAnimationObservers();
