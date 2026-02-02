@@ -37,22 +37,16 @@ function createConstellationBackground() {
     let animationId;
     let isVisible = true;
     
-    // Buffer for Safari overscroll (rubber-band effect)
-    const OVERSCROLL_BUFFER = 500;
-    
     // Set canvas size with proper DPR handling
     function resizeCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-        // Add buffer above and below for Safari overscroll
-        const height = contentHeight + (OVERSCROLL_BUFFER * 2);
+        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
         
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
-        canvas.style.top = `-${OVERSCROLL_BUFFER}px`;
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
     }
@@ -60,28 +54,25 @@ function createConstellationBackground() {
     // Dot class
     class Dot {
         constructor() {
-            const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-            // Canvas height includes buffer above and below
-            const canvasHeight = contentHeight + (OVERSCROLL_BUFFER * 2);
+            const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
             this.x = Math.random() * window.innerWidth;
-            // Y ranges from 0 to canvasHeight (0 = top of canvas which is -500px on screen)
-            this.y = Math.random() * canvasHeight;
+            this.y = Math.random() * height;
             this.vx = (Math.random() - 0.5) * 0.3;
             this.vy = (Math.random() - 0.5) * 0.3;
             this.radius = Math.random() * 1.5 + 0.5;
         }
         
-        update(width, canvasHeight) {
+        update(width, height) {
             this.x += this.vx;
             this.y += this.vy;
             
-            // Bounce off edges (full canvas including buffer areas)
+            // Bounce off edges
             if (this.x < 0 || this.x > width) this.vx *= -1;
-            if (this.y < 0 || this.y > canvasHeight) this.vy *= -1;
+            if (this.y < 0 || this.y > height) this.vy *= -1;
             
             // Keep within bounds
             this.x = Math.max(0, Math.min(width, this.x));
-            this.y = Math.max(0, Math.min(canvasHeight, this.y));
+            this.y = Math.max(0, Math.min(height, this.y));
         }
     }
     
@@ -89,11 +80,10 @@ function createConstellationBackground() {
     function initDots() {
         dots = [];
         const width = window.innerWidth;
-        const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-        const canvasHeight = contentHeight + (OVERSCROLL_BUFFER * 2);
+        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
         // Reduced dot count for better performance
         const divisor = width <= 768 ? 12000 : 20000;
-        const dotCount = Math.min(Math.floor((width * canvasHeight) / divisor), 150);
+        const dotCount = Math.min(Math.floor((width * height) / divisor), 150);
         for (let i = 0; i < dotCount; i++) {
             dots.push(new Dot());
         }
@@ -136,14 +126,13 @@ function createConstellationBackground() {
         
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const contentHeight = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-        const canvasHeight = contentHeight + (OVERSCROLL_BUFFER * 2);
+        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
         
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         
         // Update dots
         for (let i = 0; i < dots.length; i++) {
-            dots[i].update(width, canvasHeight);
+            dots[i].update(width, height);
         }
         
         // Batch draw all dots with single fillStyle
@@ -356,7 +345,38 @@ function initializeAnimationObservers() {
 // MAIN INITIALIZATION
 // ============================================
 
+function preventSafariOverscroll() {
+    // Detect iOS Safari
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    if (!isIOS) return;
+    
+    let startY = 0;
+    
+    document.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].pageY;
+    }, { passive: true });
+    
+    document.addEventListener('touchmove', (e) => {
+        const currentY = e.touches[0].pageY;
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = window.innerHeight;
+        
+        // At top of page, pulling down
+        if (scrollTop <= 0 && currentY > startY) {
+            e.preventDefault();
+        }
+        // At bottom of page, pulling up
+        else if (scrollTop + clientHeight >= scrollHeight && currentY < startY) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+}
+
 function initializeApp() {
+    preventSafariOverscroll();
     createConstellationBackground();
     initializeFullscreen();
     initializeScrollHandling();

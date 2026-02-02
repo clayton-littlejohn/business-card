@@ -91,10 +91,10 @@ body::after {
 /* Constellation background canvas */
 #constellation-canvas {
     position: fixed;
-    /* top is set by JS to -500px for Safari overscroll coverage */
+    top: 0;
     left: 0;
     width: 100%;
-    /* Height controlled by JavaScript to match scrollHeight + buffer */
+    height: 100%;
     z-index: 1;
     pointer-events: none;
     opacity: 0.8;
