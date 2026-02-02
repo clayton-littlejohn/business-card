@@ -41,7 +41,12 @@ function createConstellationBackground() {
     function resizeCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        // Use max of scrollHeight, innerHeight, and add buffer for iOS Safari dynamic viewport
+        const height = Math.max(
+            document.documentElement.scrollHeight,
+            window.innerHeight,
+            document.body.scrollHeight
+        ) + 100; // Extra buffer for Safari bottom bar
         
         canvas.width = width * dpr;
         canvas.height = height * dpr;
