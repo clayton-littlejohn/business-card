@@ -30,14 +30,7 @@ function debounce(func, wait) {
 function createConstellationBackground() {
     const canvas = document.createElement('canvas');
     canvas.id = 'constellation-canvas';
-    
-    // Insert into background layer if it exists, otherwise prepend to body
-    const bgLayer = document.querySelector('.background-layer');
-    if (bgLayer) {
-        bgLayer.appendChild(canvas);
-    } else {
-        document.body.prepend(canvas);
-    }
+    document.body.prepend(canvas);
     
     const ctx = canvas.getContext('2d', { alpha: true });
     let dots = [];

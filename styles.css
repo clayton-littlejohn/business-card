@@ -23,67 +23,17 @@ html {
     -ms-overflow-style: none;
     background: var(--pure-black);
     scroll-padding-top: 80px;
-    overscroll-behavior-y: none;
+    overscroll-behavior: none;
 }
 
-/* Background layer - fills entire screen for Safari overscroll */
+/* Background layer - hidden, not needed */
 .background-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--pure-black);
-    z-index: 0;
-    pointer-events: none;
+    display: none;
 }
 
-/* Gradient vignette effect - on background layer */
-.background-layer::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(ellipse 110% 35% at 0% 100%,
-            rgba(26, 117, 222, 0.6) 0%,
-            rgba(59, 130, 246, 0.4) 15%,
-            rgba(96, 165, 250, 0.2) 30%,
-            transparent 100%),
-        radial-gradient(ellipse 110% 35% at 100% 100%,
-            rgba(26, 117, 222, 0.6) 0%,
-            rgba(59, 130, 246, 0.4) 15%,
-            rgba(96, 165, 250, 0.2) 30%,
-            transparent 100%),
-        radial-gradient(ellipse 65% 100% at center, var(--deep-black) 50%, var(--pure-black) 100%);
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Constellation background canvas */
-#constellation-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    opacity: 0.8;
-    z-index: 2;
-}
-
-/* Scroll wrapper - not used, just a pass-through container */
+/* Scroll wrapper - just a pass-through */
 .scroll-wrapper {
     position: relative;
-    z-index: 3;
-}
-
-.scroll-wrapper::-webkit-scrollbar {
-    display: none;
 }
 
 /* Base Reset and Body Styles */
@@ -101,9 +51,45 @@ body {
     min-height: 100dvh;
     position: relative;
     overflow-x: hidden;
-    background: transparent;
-    overscroll-behavior-y: none;
-    z-index: 3;
+    background: var(--pure-black);
+    overscroll-behavior: none;
+}
+
+/* Gradient vignette effect from bottom corners */
+body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    background: 
+        radial-gradient(ellipse 110% 35% at 0% 100%,
+            rgba(26, 117, 222, 0.6) 0%,
+            rgba(59, 130, 246, 0.4) 15%,
+            rgba(96, 165, 250, 0.2) 30%,
+            transparent 100%),
+        radial-gradient(ellipse 110% 35% at 100% 100%,
+            rgba(26, 117, 222, 0.6) 0%,
+            rgba(59, 130, 246, 0.4) 15%,
+            rgba(96, 165, 250, 0.2) 30%,
+            transparent 100%),
+        radial-gradient(ellipse 65% 100% at center, var(--deep-black) 50%, var(--pure-black) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Constellation background canvas */
+#constellation-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.8;
+    z-index: 2;
 }
 
 /* Keyframe Animations */
