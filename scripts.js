@@ -30,23 +30,28 @@ function debounce(func, wait) {
 function createConstellationBackground() {
     const canvas = document.createElement('canvas');
     canvas.id = 'constellation-canvas';
-    document.body.prepend(canvas);
+    
+    // Insert canvas into background layer
+    const bgLayer = document.querySelector('.background-layer');
+    if (bgLayer) {
+        bgLayer.appendChild(canvas);
+    } else {
+        document.body.prepend(canvas);
+    }
     
     const ctx = canvas.getContext('2d', { alpha: true });
     let dots = [];
     let animationId;
     let isVisible = true;
     
+    // Get scroll wrapper for height calculations
+    const scrollWrapper = document.getElementById('scrollWrapper');
+    
     // Set canvas size with proper DPR handling
     function resizeCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        // Use max of scrollHeight, innerHeight, and add buffer for iOS Safari dynamic viewport
-        const height = Math.max(
-            document.documentElement.scrollHeight,
-            window.innerHeight,
-            document.body.scrollHeight
-        ) + 100; // Extra buffer for Safari bottom bar
+        const height = window.innerHeight; // Fixed viewport size
         
         canvas.width = width * dpr;
         canvas.height = height * dpr;
@@ -59,9 +64,8 @@ function createConstellationBackground() {
     // Dot class
     class Dot {
         constructor() {
-            const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
             this.x = Math.random() * window.innerWidth;
-            this.y = Math.random() * height;
+            this.y = Math.random() * window.innerHeight;
             this.vx = (Math.random() - 0.5) * 0.3;
             this.vy = (Math.random() - 0.5) * 0.3;
             this.radius = Math.random() * 1.5 + 0.5;
@@ -85,7 +89,7 @@ function createConstellationBackground() {
     function initDots() {
         dots = [];
         const width = window.innerWidth;
-        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        const height = window.innerHeight;
         // Reduced dot count for better performance
         const divisor = width <= 768 ? 12000 : 20000;
         const dotCount = Math.min(Math.floor((width * height) / divisor), 150);
@@ -131,7 +135,7 @@ function createConstellationBackground() {
         
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+        const height = window.innerHeight;
         
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         
@@ -182,14 +186,6 @@ function createConstellationBackground() {
     document.addEventListener('visibilitychange', () => {
         isVisible = !document.hidden;
     });
-    
-    // Update canvas height when content changes - use ResizeObserver if available
-    if (typeof ResizeObserver !== 'undefined') {
-        const resizeObserver = new ResizeObserver(debounce(() => {
-            resizeCanvas();
-        }, 500));
-        resizeObserver.observe(document.body);
-    }
 }
 
 // ============================================
@@ -284,13 +280,14 @@ function updateFullscreenButton() {
 
 function initializeScrollHandling() {
     const mainNav = document.querySelector('.main-nav');
-    if (!mainNav) return;
+    const scrollWrapper = document.getElementById('scrollWrapper');
+    if (!mainNav || !scrollWrapper) return;
     
     // Cache computed values
     const isDesktop = window.innerWidth > 768;
     
     const handleScroll = throttle(() => {
-        const scrollDistance = Math.min(window.scrollY, 150);
+        const scrollDistance = Math.min(scrollWrapper.scrollTop, 150);
         const opacity = scrollDistance / 150;
         
         requestAnimationFrame(() => {
@@ -313,7 +310,7 @@ function initializeScrollHandling() {
         });
     }, 16);
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    scrollWrapper.addEventListener('scroll', handleScroll, { passive: true });
 }
 
 // ============================================
@@ -350,38 +347,7 @@ function initializeAnimationObservers() {
 // MAIN INITIALIZATION
 // ============================================
 
-function preventSafariOverscroll() {
-    // Detect iOS Safari
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    
-    if (!isIOS) return;
-    
-    let startY = 0;
-    
-    document.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].pageY;
-    }, { passive: true });
-    
-    document.addEventListener('touchmove', (e) => {
-        const currentY = e.touches[0].pageY;
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const clientHeight = window.innerHeight;
-        
-        // At top of page, pulling down
-        if (scrollTop <= 0 && currentY > startY) {
-            e.preventDefault();
-        }
-        // At bottom of page, pulling up
-        else if (scrollTop + clientHeight >= scrollHeight && currentY < startY) {
-            e.preventDefault();
-        }
-    }, { passive: false });
-}
-
 function initializeApp() {
-    preventSafariOverscroll();
     createConstellationBackground();
     initializeFullscreen();
     initializeScrollHandling();
