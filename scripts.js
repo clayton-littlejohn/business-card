@@ -30,28 +30,18 @@ function debounce(func, wait) {
 function createConstellationBackground() {
     const canvas = document.createElement('canvas');
     canvas.id = 'constellation-canvas';
-    
-    // Insert canvas into background layer
-    const bgLayer = document.querySelector('.background-layer');
-    if (bgLayer) {
-        bgLayer.appendChild(canvas);
-    } else {
-        document.body.prepend(canvas);
-    }
+    document.body.prepend(canvas);
     
     const ctx = canvas.getContext('2d', { alpha: true });
     let dots = [];
     let animationId;
     let isVisible = true;
     
-    // Get scroll wrapper for height calculations
-    const scrollWrapper = document.getElementById('scrollWrapper');
-    
     // Set canvas size with proper DPR handling
     function resizeCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const width = window.innerWidth;
-        const height = window.innerHeight; // Fixed viewport size
+        const height = window.innerHeight;
         
         canvas.width = width * dpr;
         canvas.height = height * dpr;
@@ -280,14 +270,13 @@ function updateFullscreenButton() {
 
 function initializeScrollHandling() {
     const mainNav = document.querySelector('.main-nav');
-    const scrollWrapper = document.getElementById('scrollWrapper');
-    if (!mainNav || !scrollWrapper) return;
+    if (!mainNav) return;
     
     // Cache computed values
     const isDesktop = window.innerWidth > 768;
     
     const handleScroll = throttle(() => {
-        const scrollDistance = Math.min(scrollWrapper.scrollTop, 150);
+        const scrollDistance = Math.min(window.scrollY, 150);
         const opacity = scrollDistance / 150;
         
         requestAnimationFrame(() => {
@@ -310,7 +299,7 @@ function initializeScrollHandling() {
         });
     }, 16);
 
-    scrollWrapper.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
 }
 
 // ============================================

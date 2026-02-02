@@ -22,12 +22,11 @@ html {
     scrollbar-width: none;
     -ms-overflow-style: none;
     background: var(--pure-black);
-    /* Prevent document scroll - wrapper handles it */
-    overflow: hidden;
-    height: 100%;
+    scroll-padding-top: 80px;
+    overscroll-behavior-y: none;
 }
 
-/* Background layer - fills entire screen and stays behind everything */
+/* Background layer - fills entire screen */
 .background-layer {
     position: fixed;
     top: 0;
@@ -37,7 +36,7 @@ html {
     width: 100%;
     height: 100%;
     background: var(--pure-black);
-    z-index: 0;
+    z-index: -2;
 }
 
 /* Gradient overlay on background layer */
@@ -61,23 +60,11 @@ html {
             transparent 100%),
         radial-gradient(ellipse 65% 100% at center, var(--deep-black) 50%, var(--pure-black) 100%);
     pointer-events: none;
-    z-index: 1;
 }
 
-/* Scroll wrapper - becomes the actual scroll container */
+/* Scroll wrapper - not used, just a pass-through container */
 .scroll-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-    scroll-padding-top: 80px;
-    z-index: 1;
+    position: relative;
 }
 
 .scroll-wrapper::-webkit-scrollbar {
@@ -95,23 +82,24 @@ body {
     font-family: 'Space Grotesk', sans-serif;
     color: var(--text-primary);
     line-height: 1.6;
-    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
     position: relative;
-    overflow: hidden;
-    height: 100%;
+    overflow-x: hidden;
     background: var(--pure-black);
+    overscroll-behavior-y: none;
 }
 
-/* Constellation background canvas - inside background layer */
+/* Constellation background canvas */
 #constellation-canvas {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
     opacity: 0.8;
-    z-index: 2;
+    z-index: -1;
 }
 
 /* Keyframe Animations */

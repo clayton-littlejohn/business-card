@@ -23,11 +23,9 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <!-- Background layer - stays behind scroll content -->
+    <!-- Background layer for Safari overscroll fix -->
     <div class="background-layer" aria-hidden="true"></div>
     
-    <!-- Scroll wrapper - this becomes the scroll container instead of body -->
-    <div class="scroll-wrapper" id="scrollWrapper">
     <!-- Floating Background Elements -->
     <div class="global-floating-elements" id="globalFloatingElements"></div>
 
@@ -460,7 +458,6 @@
             </div>
         </div>
     </footer>
-    </div><!-- End scroll-wrapper -->
 
     <script src="./scripts.js" defer></script>
 </body>
