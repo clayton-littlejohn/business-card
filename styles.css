@@ -24,11 +24,12 @@ html {
     background: var(--pure-black);
     scroll-padding-top: 80px;
     min-height: 100%;
-    /* Safari overscroll: extend background beyond viewport */
-    background-attachment: fixed;
+    /* Disable Safari overscroll bounce effect (iOS 16+) */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
 }
 
-/* Safari overscroll fix - covers rubber band effect areas */
+/* Fallback for older Safari - covers rubber band effect areas */
 .safari-overscroll-fix {
     position: fixed;
     top: -100%;
@@ -58,44 +59,31 @@ body {
     position: relative;
     overflow-x: hidden;
     background: var(--pure-black);
-}
-
-/* Safari overscroll background coverage */
-body::before {
-    content: '';
-    position: fixed;
-    top: -100vh;
-    left: 0;
-    width: 100%;
-    height: calc(300vh + 100px);
-    height: calc(300dvh + 100px);
-    background: var(--pure-black);
-    z-index: -1;
-    pointer-events: none;
+    /* Disable Safari overscroll bounce on body as well */
+    overscroll-behavior: none;
 }
 
 /* Vintage blue vignette effect from bottom corners */
 body::after {
     content: '';
     position: fixed;
-    top: -50vh;
-    top: -50dvh;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 250vh;
-    height: 250dvh;
+    height: 100vh;
+    height: 100dvh;
     background: 
-        radial-gradient(ellipse 110% 14% at 0% 60%,
+        radial-gradient(ellipse 110% 35% at 0% 100%,
             rgba(26, 117, 222, 0.6) 0%,
             rgba(59, 130, 246, 0.4) 15%,
             rgba(96, 165, 250, 0.2) 30%,
             transparent 100%),
-        radial-gradient(ellipse 110% 14% at 100% 60%,
+        radial-gradient(ellipse 110% 35% at 100% 100%,
             rgba(26, 117, 222, 0.6) 0%,
             rgba(59, 130, 246, 0.4) 15%,
             rgba(96, 165, 250, 0.2) 30%,
             transparent 100%),
-        radial-gradient(ellipse 65% 40% at center 40%, var(--deep-black) 50%, var(--pure-black) 100%);
+        radial-gradient(ellipse 65% 100% at center, var(--deep-black) 50%, var(--pure-black) 100%);
     z-index: 0;
     pointer-events: none;
 }
