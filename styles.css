@@ -26,7 +26,7 @@ html {
     overscroll-behavior-y: none;
 }
 
-/* Background layer - fills entire screen */
+/* Background layer - fills entire screen for Safari overscroll */
 .background-layer {
     position: fixed;
     top: 0;
@@ -36,10 +36,11 @@ html {
     width: 100%;
     height: 100%;
     background: var(--pure-black);
-    z-index: -2;
+    z-index: 0;
+    pointer-events: none;
 }
 
-/* Gradient overlay on background layer */
+/* Gradient vignette effect - on background layer */
 .background-layer::after {
     content: '';
     position: absolute;
@@ -60,11 +61,25 @@ html {
             transparent 100%),
         radial-gradient(ellipse 65% 100% at center, var(--deep-black) 50%, var(--pure-black) 100%);
     pointer-events: none;
+    z-index: 1;
+}
+
+/* Constellation background canvas */
+#constellation-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.8;
+    z-index: 2;
 }
 
 /* Scroll wrapper - not used, just a pass-through container */
 .scroll-wrapper {
     position: relative;
+    z-index: 3;
 }
 
 .scroll-wrapper::-webkit-scrollbar {
@@ -86,20 +101,9 @@ body {
     min-height: 100dvh;
     position: relative;
     overflow-x: hidden;
-    background: var(--pure-black);
+    background: transparent;
     overscroll-behavior-y: none;
-}
-
-/* Constellation background canvas */
-#constellation-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    opacity: 0.8;
-    z-index: -1;
+    z-index: 3;
 }
 
 /* Keyframe Animations */
