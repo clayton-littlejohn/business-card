@@ -15,14 +15,6 @@ function throttle(func, limit) {
     };
 }
 
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-
 // ============================================
 // CONSTELLATION BACKGROUND
 // ============================================
@@ -88,7 +80,7 @@ function createConstellationBackground() {
         }
     }
     
-    // Draw connections between nearby dots (optimized)
+    // Draw connections between nearby dots (optimized with batching)
     function drawConnections() {
         const maxDistance = 150;
         const maxDistanceSq = maxDistance * maxDistance;
@@ -99,7 +91,6 @@ function createConstellationBackground() {
             for (let j = i + 1; j < dots.length; j++) {
                 const dx = dots[i].x - dots[j].x;
                 const dy = dots[i].y - dots[j].y;
-                // Use squared distance to avoid sqrt
                 const distanceSq = dx * dx + dy * dy;
                 
                 if (distanceSq < maxDistanceSq) {
@@ -107,7 +98,6 @@ function createConstellationBackground() {
                     const opacity = (1 - distance / maxDistance) * 0.3;
                     ctx.beginPath();
                     ctx.strokeStyle = `rgba(26, 117, 222, ${opacity})`;
-                    ctx.lineWidth = 0.5;
                     ctx.moveTo(dots[i].x, dots[i].y);
                     ctx.lineTo(dots[j].x, dots[j].y);
                     ctx.stroke();
@@ -205,7 +195,7 @@ function createConstellationBackground() {
     initDots();
     animate();
     
-    // Listen for resize - use throttle instead of debounce for smoother updates
+    // Listen for resize with throttle for smoother updates
     window.addEventListener('resize', throttle(handleResize, 50));
     
     // Pause animation when tab is not visible

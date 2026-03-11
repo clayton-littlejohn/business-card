@@ -7,7 +7,6 @@
     --pure-black: #000000;
     --deep-black: #101010;
     --wireframe-blue: rgba(30, 64, 175, 0.8);
-    --glow-blue: rgba(59, 130, 246, 0.6);
     --text-primary: #f8fafc;
     --text-secondary: #cbd5e1;
 }
@@ -83,17 +82,6 @@ body::after {
 }
 
 /* Keyframe Animations */
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0.4;
-    }
-    50% {
-        transform: translateY(-20px) rotate(180deg);
-        opacity: 0.6;
-    }
-}
-
 @keyframes profileGlow {
     0%, 100% {
         opacity: 0.4;
@@ -135,19 +123,6 @@ body::after {
     50% {
         transform: translateX(-50%) translateY(8px);
     }
-}
-
-/* Global Elements */
-
-.global-floating-elements {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
 }
 
 /* Navigation Styles */
