@@ -148,19 +148,55 @@ function createConstellationBackground() {
         animationId = requestAnimationFrame(animate);
     }
     
-    // Handle window resize - preserve dots on height-only changes
+    // Handle window resize - scale existing dots smoothly
     function handleResize() {
-        const oldWidth = canvas.width / (window.devicePixelRatio || 1);
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const oldWidth = canvas.width / dpr;
+        const oldHeight = canvas.height / dpr;
+        const newWidth = window.innerWidth;
+        const newHeight = window.innerHeight;
         
+        // Skip if no actual size change
+        if (Math.abs(newWidth - oldWidth) < 1 && Math.abs(newHeight - oldHeight) < 1) {
+            return;
+        }
+        
+        // Scale existing dot positions to new canvas size
+        const scaleX = newWidth / oldWidth;
+        const scaleY = newHeight / oldHeight;
+        
+        for (let i = 0; i < dots.length; i++) {
+            dots[i].x *= scaleX;
+            dots[i].y *= scaleY;
+            // Ensure dots stay within bounds
+            dots[i].x = Math.max(0, Math.min(newWidth, dots[i].x));
+            dots[i].y = Math.max(0, Math.min(newHeight, dots[i].y));
+        }
+        
+        // Resize the canvas
         resizeCanvas();
         
-        // Only reinitialize dots if width changed significantly (desktop resize)
-        // Don't reinit for mobile scroll-based height changes
-        const newWidth = window.innerWidth;
-        const widthChanged = Math.abs(newWidth - oldWidth) > 50;
+        // Adjust dot count to match new area density
+        const divisor = newWidth <= 768 ? 12000 : 20000;
+        const targetDotCount = Math.min(Math.floor((newWidth * newHeight) / divisor), 150);
         
-        if (widthChanged) {
-            initDots();
+        // Add dots if needed
+        while (dots.length < targetDotCount) {
+            const newDot = new Dot();
+            // Spawn new dots at edges for smoother appearance
+            if (Math.random() < 0.5) {
+                newDot.x = Math.random() < 0.5 ? 0 : newWidth;
+                newDot.y = Math.random() * newHeight;
+            } else {
+                newDot.x = Math.random() * newWidth;
+                newDot.y = Math.random() < 0.5 ? 0 : newHeight;
+            }
+            dots.push(newDot);
+        }
+        
+        // Remove excess dots gradually (from end of array)
+        while (dots.length > targetDotCount) {
+            dots.pop();
         }
     }
     
@@ -169,8 +205,8 @@ function createConstellationBackground() {
     initDots();
     animate();
     
-    // Listen for resize with debounce for better performance
-    window.addEventListener('resize', debounce(handleResize, 250));
+    // Listen for resize - use throttle instead of debounce for smoother updates
+    window.addEventListener('resize', throttle(handleResize, 50));
     
     // Pause animation when tab is not visible
     document.addEventListener('visibilitychange', () => {
