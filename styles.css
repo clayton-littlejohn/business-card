@@ -26,16 +26,6 @@ html {
     overscroll-behavior: none;
 }
 
-/* Background layer - hidden, not needed */
-.background-layer {
-    display: none;
-}
-
-/* Scroll wrapper - just a pass-through */
-.scroll-wrapper {
-    position: relative;
-}
-
 /* Base Reset and Body Styles */
 * {
     margin: 0;
@@ -101,15 +91,6 @@ body::after {
     50% {
         transform: translateY(-20px) rotate(180deg);
         opacity: 0.6;
-    }
-}
-
-@keyframes scaleFloat {
-    0%, 100% {
-        transform: scale(1.0);
-    }
-    50% {
-        transform: scale(0.5);
     }
 }
 
@@ -315,22 +296,6 @@ body::after {
     justify-content: center;
     overflow: hidden;
     z-index: 2;
-}
-
-/* Floating Wireframe Elements */
-
-.floating-elements {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.float-element {
-    display: none;
 }
 
 /* Profile Section Styles */
@@ -753,16 +718,6 @@ body::after {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-size: 0.75rem;
-}
-
-/* Tab Content Styles */
-
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
 }
 
 /* Fade In Animation for Content Sections */
