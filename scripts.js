@@ -29,16 +29,18 @@ function createConstellationBackground() {
     let animationId;
     let isVisible = true;
     
+    // Store stable dimensions to prevent mobile browser UI resize jitter
+    let stableWidth = window.innerWidth;
+    let stableHeight = window.innerHeight;
+    
     // Set canvas size with proper DPR handling
     function resizeCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const width = window.innerWidth;
-        const height = window.innerHeight;
         
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
+        canvas.width = stableWidth * dpr;
+        canvas.height = stableHeight * dpr;
+        canvas.style.width = stableWidth + 'px';
+        canvas.style.height = stableHeight + 'px';
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
     }
@@ -46,8 +48,8 @@ function createConstellationBackground() {
     // Dot class
     class Dot {
         constructor() {
-            this.x = Math.random() * window.innerWidth;
-            this.y = Math.random() * window.innerHeight;
+            this.x = Math.random() * stableWidth;
+            this.y = Math.random() * stableHeight;
             this.vx = (Math.random() - 0.5) * 0.3;
             this.vy = (Math.random() - 0.5) * 0.3;
             this.radius = Math.random() * 1.5 + 0.5;
@@ -70,11 +72,9 @@ function createConstellationBackground() {
     // Initialize dots
     function initDots() {
         dots = [];
-        const width = window.innerWidth;
-        const height = window.innerHeight;
         // Reduced dot count for better performance
-        const divisor = width <= 768 ? 12000 : 20000;
-        const dotCount = Math.min(Math.floor((width * height) / divisor), 150);
+        const divisor = stableWidth <= 768 ? 12000 : 20000;
+        const dotCount = Math.min(Math.floor((stableWidth * stableHeight) / divisor), 150);
         for (let i = 0; i < dotCount; i++) {
             dots.push(new Dot());
         }
@@ -114,14 +114,12 @@ function createConstellationBackground() {
         }
         
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const width = window.innerWidth;
-        const height = window.innerHeight;
         
         ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
         
-        // Update dots
+        // Update dots using stable dimensions
         for (let i = 0; i < dots.length; i++) {
-            dots[i].update(width, height);
+            dots[i].update(stableWidth, stableHeight);
         }
         
         // Batch draw all dots with single fillStyle
@@ -140,16 +138,28 @@ function createConstellationBackground() {
     
     // Handle window resize - scale existing dots smoothly
     function handleResize() {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const oldWidth = canvas.width / dpr;
-        const oldHeight = canvas.height / dpr;
         const newWidth = window.innerWidth;
         const newHeight = window.innerHeight;
         
-        // Skip if no actual size change
-        if (Math.abs(newWidth - oldWidth) < 1 && Math.abs(newHeight - oldHeight) < 1) {
+        // Calculate the change in dimensions
+        const widthDiff = Math.abs(newWidth - stableWidth);
+        const heightDiff = Math.abs(newHeight - stableHeight);
+        
+        // Ignore height-only changes under 150px (mobile browser UI appearing/disappearing)
+        // Only resize if width changed OR height changed significantly (orientation change)
+        const isWidthChange = widthDiff > 1;
+        const isSignificantHeightChange = heightDiff > 150;
+        
+        if (!isWidthChange && !isSignificantHeightChange) {
             return;
         }
+        
+        const oldWidth = stableWidth;
+        const oldHeight = stableHeight;
+        
+        // Update stable dimensions
+        stableWidth = newWidth;
+        stableHeight = newHeight;
         
         // Scale existing dot positions to new canvas size
         const scaleX = newWidth / oldWidth;
