@@ -634,9 +634,15 @@ body::after {
     background: linear-gradient(180deg, 
         var(--bright-blue) 0%, 
         var(--electric-blue) 50%, 
-        var(--cyan-blue) 100%);
+        var(--bright-blue) 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    clip-path: polygon(
+        0 0,
+        100% 1px,
+        100% 100%,
+        0 100%
+    );
 }
 
 .focus-area:hover {
@@ -707,16 +713,15 @@ body::after {
 }
 
 .area-content {
-    max-height: 0;
+    display: grid;
+    grid-template-rows: 0fr;
     overflow: hidden;
-    transition: max-height 0.4s ease, margin-top 0.4s ease, padding 0.4s ease, opacity 0.3s ease;
+    transition: grid-template-rows 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                margin-bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     opacity: 0;
-}
-
-.focus-area.active .area-content {
-    max-height: 1000px;
     margin-top: 16px;
-    padding: 20px 24px;
+    margin-bottom: -16px;
     background: linear-gradient(135deg, 
         rgba(0, 0, 0, 0.5) 0%, 
         rgba(26, 117, 222, 0.08) 100%);
@@ -725,7 +730,6 @@ body::after {
     box-shadow: 
         inset 0 0 30px rgba(0, 0, 0, 0.4),
         0 0 20px rgba(59, 130, 246, 0.1);
-    opacity: 1;
     backdrop-filter: blur(10px);
     clip-path: polygon(
         0 0,
@@ -736,9 +740,10 @@ body::after {
         0 calc(100% - 8px)
     );
     position: relative;
+    will-change: grid-template-rows, opacity, margin-bottom;
 }
 
-.focus-area.active .area-content::before {
+.area-content::before {
     content: '';
     position: absolute;
     top: 0;
@@ -748,6 +753,28 @@ body::after {
     background: linear-gradient(90deg, 
         var(--electric-blue) 0%, 
         transparent 100%);
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.area-content-inner {
+    overflow: hidden;
+    padding: 0 24px;
+    transition: padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.focus-area.active .area-content {
+    grid-template-rows: 1fr;
+    margin-bottom: 0;
+    opacity: 1;
+}
+
+.focus-area.active .area-content::before {
+    opacity: 1;
+}
+
+.focus-area.active .area-content-inner {
+    padding: 20px 24px;
 }
 
 .area-title {
