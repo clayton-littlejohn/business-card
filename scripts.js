@@ -301,6 +301,17 @@ function initializeScrollHandling() {
     // Cache computed values
     const isDesktop = window.innerWidth > 768;
     
+    // On mobile, always show navbar background
+    if (!isDesktop) {
+        mainNav.style.background = `linear-gradient(180deg, 
+            rgba(0, 0, 0, 0.95) 0%, 
+            rgba(16, 16, 16, 0.9) 100%)`;
+        mainNav.style.borderBottomColor = `rgba(59, 130, 246, 0.3)`;
+        mainNav.style.boxShadow = `0 8px 32px rgba(0, 0, 0, 0.4), 
+                                   0 0 0 1px rgba(59, 130, 246, 0.1)`;
+        return;
+    }
+    
     const handleScroll = throttle(() => {
         const scrollDistance = Math.min(window.scrollY, 150);
         const opacity = scrollDistance / 150;
@@ -315,7 +326,7 @@ function initializeScrollHandling() {
                                            0 0 0 1px rgba(59, 130, 246, ${0.1 * opacity})`;
                 
                 // Only apply backdrop-filter on desktop
-                mainNav.style.backdropFilter = isDesktop ? `blur(${25 * opacity}px)` : 'none';
+                mainNav.style.backdropFilter = `blur(${25 * opacity}px)`;
             } else {
                 mainNav.style.background = 'transparent';
                 mainNav.style.backdropFilter = 'none';
