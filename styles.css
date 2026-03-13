@@ -423,8 +423,6 @@ body::after {
 .content-section {
     background: color-mix(in srgb, var(--pure-black) 20%, transparent);
     backdrop-filter: blur(20px);
-    border: 0.5px solid rgba(59, 130, 246, 0.25);
-    border-radius: 0;
     margin-top: 50px;
     overflow: hidden;
     box-shadow:
@@ -444,7 +442,7 @@ body::after {
 
 .section-header {
     padding: 25px 35px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
     box-shadow: 0 8px 32px var(--pure-black);
     display: flex;
@@ -468,12 +466,13 @@ body::after {
 
 .section-content {
     padding: 40px 35px;
-    background: transparent;
     border: 0.5px solid rgba(255, 255, 255, 0.15);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-top: none;
+    background: 
+        linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%, rgba(255, 255, 255, 0.15) 100%) top / 100% 1px no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
     box-shadow: 
         0 8px 32px var(--pure-black),
-        0 0 0 1px rgba(59, 130, 246, 0.25),
         inset 40px 0 60px -40px rgba(0, 0, 0, 0.6),
         inset -40px 0 60px -40px rgba(0, 0, 0, 0.6);
 }
